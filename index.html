@@ -257,6 +257,9 @@
           <input type="number" id="contractSize" step="any">
         </div>
       </div>
+      <div style="font-size:11px;color:var(--muted);margin:-8px 0 12px;line-height:1.4;">
+        El tamaño de contrato son las unidades del activo que representa 1 lote (ej. 100,000 divisa base para forex, 100 onzas para oro, 1 contrato para índices/cripto). Puedes editarlo si tu bróker usa otro tamaño.
+      </div>
       <div class="rate-status">
         <span class="dot" id="rateDot"></span>
         <span id="rateStatusText">Tasas sin cargar</span>
@@ -303,6 +306,7 @@
         <div><input type="number" id="currentPrice" step="any" placeholder="Ej. 1.0850" style="margin-bottom:0;"></div>
         <div style="flex:none;width:110px;"><button class="btn ghost sm" id="btnFetchPrice" style="width:100%;height:100%;">Obtener</button></div>
       </div>
+      <div style="font-size:11px;color:var(--muted);margin:-8px 0 14px;" id="priceSourceNote">—</div>
 
       <div class="result" id="pipsResultBox">
         <div class="label">Resultado</div>
@@ -677,9 +681,14 @@ function initPipsPanel(){
   });
 
   document.getElementById("btnFetchPrice").addEventListener("click", async ()=>{
+    if (!hasLiveSource(currentCategory(), currentPair())) return;
+    const btn = document.getElementById("btnFetchPrice");
+    const original = btn.textContent;
+    btn.textContent = "…"; btn.disabled = true;
     await fetchRates(true);
     setCurrentPriceFromLive();
     calcPips();
+    btn.textContent = original; btn.disabled = false;
   });
 
   document.getElementById("btnSavePips").addEventListener("click", saveCurrentPipsToHistory);
@@ -693,16 +702,43 @@ function applyInstrumentDefaults(){
   setCurrentPriceFromLive();
 }
 
+function hasLiveSource(cat, pair){
+  if (cat === "standard" || cat === "jpy") return true;
+  if (cat === "crypto") return !!COINGECKO_IDS[pair];
+  return false; // metals e índices: sin API gratuita confiable, precio manual
+}
+
 function setCurrentPriceFromLive(){
   const cat = currentCategory(), pair = currentPair();
   const priceEl = document.getElementById("currentPrice");
+  const note = document.getElementById("priceSourceNote");
+  const btn = document.getElementById("btnFetchPrice");
   let price = null;
-  if (cat === "crypto" && cryptoPrices[pair]) price = cryptoPrices[pair];
+
+  if (cat === "crypto") price = cryptoPrices[pair] || null;
   else if (cat === "standard" || cat === "jpy"){
     const [base, quote] = pair.split("/");
     price = derivedPrice(base, quote);
   }
-  if (price) priceEl.value = Number(price.toPrecision(6));
+
+  if (!hasLiveSource(cat, pair)){
+    priceEl.value = "";
+    priceEl.placeholder = "Ingresa el precio manualmente";
+    note.textContent = `No hay fuente en vivo gratuita para ${pair} — ingresa el precio manualmente.`;
+    btn.disabled = true; btn.style.opacity = "0.45";
+    return;
+  }
+
+  btn.disabled = false; btn.style.opacity = "1";
+  priceEl.placeholder = "Ej. 1.0850";
+  if (price){
+    priceEl.value = Number(price.toPrecision(6));
+    note.textContent = cat === "crypto"
+      ? "Precio en vivo (CoinGecko)."
+      : "Precio derivado de tasas de cambio en vivo (aprox.).";
+  } else {
+    note.textContent = "Toca “Obtener” para traer el precio en vivo.";
+  }
 }
 
 function calcPips(){
