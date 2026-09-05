@@ -287,6 +287,9 @@
         <div class="field-help">
           Se autocompletan según el instrumento (ej. 100,000 divisa base para forex, 100 onzas para oro, 1 contrato para índices/cripto). Solo edítalos si tu bróker usa un tamaño distinto — el cálculo normal solo necesita el lotaje.
         </div>
+        <div class="explain" id="metalsPipWarning" style="display:none;border-color:rgba(245,190,90,0.4);">
+          <b>Importante:</b> para oro y plata no existe un estándar único — algunos brokers definen 1 pip = $0.01, otros = $0.10 (10x de diferencia en tu resultado). Verifícalo en tu plataforma real (en MT4/MT5: clic derecho sobre XAUUSD → <b>Especificación</b> → revisa "Tick size" o "valor de un pip") y ajusta el campo "Tamaño del pip" de arriba si no coincide con el valor por defecto (0.01).
+        </div>
       </div>
       <div class="rate-status">
         <span class="dot" id="rateDot"></span>
@@ -864,6 +867,16 @@ function applyInstrumentDefaults(){
   document.getElementById("pipSize").value = def.pip;
   document.getElementById("contractSize").value = def.contract;
   setCurrentPriceFromLive();
+
+  const warning = document.getElementById("metalsPipWarning");
+  if (cat === "metals"){
+    warning.style.display = "block";
+    const box = document.getElementById("advancedFields");
+    const toggle = document.getElementById("btnAdvancedToggle");
+    if (box.style.display === "none"){ box.style.display = "block"; toggle.classList.add("open"); }
+  } else {
+    warning.style.display = "none";
+  }
 }
 
 function hasLiveSource(cat, pair){
