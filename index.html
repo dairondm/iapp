@@ -288,7 +288,7 @@
           Se autocompletan según el instrumento (ej. 100,000 divisa base para forex, 100 onzas para oro, 1 contrato para índices/cripto). Solo edítalos si tu bróker usa un tamaño distinto — el cálculo normal solo necesita el lotaje.
         </div>
         <div class="explain" id="metalsPipWarning" style="display:none;border-color:rgba(245,190,90,0.4);">
-          <b>Importante:</b> para oro y plata no existe un estándar único — algunos brokers definen 1 pip = $0.01, otros = $0.10 (10x de diferencia en tu resultado). Verifícalo en tu plataforma real (en MT4/MT5: clic derecho sobre XAUUSD → <b>Especificación</b> → revisa "Tick size" o "valor de un pip") y ajusta el campo "Tamaño del pip" de arriba si no coincide con el valor por defecto (0.01).
+          <b>Importante:</b> para oro y plata no existe un estándar único — 1 pip puede ser $0.10 o $0.01 según el bróker (10x de diferencia en tu resultado). Por defecto esta app usa <b>Pip = $0.10</b>; si tu bróker usa la otra convención, cámbialo en <b>Ajustes → Unidad para Oro/Plata</b>, o edita "Tamaño del pip" aquí manualmente. Verifícalo en tu plataforma real (en MT4/MT5: clic derecho sobre XAUUSD → <b>Especificación</b> → revisa "Tick size").
         </div>
       </div>
       <div class="rate-status">
@@ -550,6 +550,15 @@
   <div class="field-help">
     Para cuentas RAW/ECN que cobran comisión aparte del spread. Escribe el costo total por 1 lote completo (ambos lados); la app lo escala a tu lotaje y lo descuenta del resultado.
   </div>
+
+  <label>Unidad para Oro/Plata</label>
+  <div class="toggle2" id="settingsMetalsUnit">
+    <button type="button" data-unit="pip" class="active">Pips (1 = $0.10)</button>
+    <button type="button" data-unit="point">Puntos (1 = $0.01)</button>
+  </div>
+  <div class="field-help">
+    Define el "Tamaño del pip" por defecto de XAU/USD y XAG/USD. Puedes verificarlo en tu bróker y cambiarlo aquí cuando quieras — se guarda para la próxima vez que abras la app.
+  </div>
   <div class="rate-status" style="margin-top:2px;">
     <span class="dot" id="rateDot2"></span>
     <span id="rateStatusText2">—</span>
@@ -605,7 +614,8 @@ const store = {
   set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
 };
 
-let settings = store.get("pp_settings", { accountCurrency:"USD", leverage:100, commissionPerLot:null });
+let settings = store.get("pp_settings", { accountCurrency:"USD", leverage:100, commissionPerLot:null, metalsUnit:"pip" });
+if (!settings.metalsUnit) settings.metalsUnit = "pip"; // "pip" = 0.10 (10x el punto), "point" = 0.01
 let history = store.get("pp_history", []);
 let presets = store.get("pp_presets", []);
 let cachedRates = store.get("pp_rates_cache", null);
@@ -663,6 +673,14 @@ function derivedPrice(base, quote){
 
 function currentCategory(){ return document.getElementById("category").value; }
 function currentPair(){ return document.getElementById("pair").value; }
+
+// Para oro/plata el tamaño del "pip" depende de la convención elegida en Ajustes:
+// "pip" = 0.10 (10x el punto, como en el ejemplo de Gemini) o "point" = 0.01.
+// El resto de las categorías no tienen esta ambigüedad y usan su valor fijo.
+function getPipSize(cat){
+  if (cat === "metals") return settings.metalsUnit === "point" ? 0.01 : 0.10;
+  return INSTRUMENTS[cat].pip;
+}
 
 function pipValuePerLotInAccount(category, pair, pipSize, contractSize, accountCurrency){
   const quote = quoteCurrencyOf(pair, category);
@@ -791,7 +809,9 @@ function updateRateStatus(state){
 /* ---------------- Panel: Pips -> Dinero ---------------- */
 function initPipsPanel(){
   fillCategorySelect();
+  document.getElementById("category").value = "metals";
   fillPairSelect(document.getElementById("category"), document.getElementById("pair"));
+  document.getElementById("pair").value = "XAU/USD";
   fillCurrencySelect(document.getElementById("accountCurrency"));
   document.getElementById("accountCurrency").value = settings.accountCurrency;
   document.getElementById("leverage").value = settings.leverage;
@@ -864,19 +884,13 @@ function initPipsPanel(){
 function applyInstrumentDefaults(){
   const cat = currentCategory();
   const def = INSTRUMENTS[cat];
-  document.getElementById("pipSize").value = def.pip;
+  document.getElementById("pipSize").value = getPipSize(cat);
   document.getElementById("contractSize").value = def.contract;
   setCurrentPriceFromLive();
 
-  const warning = document.getElementById("metalsPipWarning");
-  if (cat === "metals"){
-    warning.style.display = "block";
-    const box = document.getElementById("advancedFields");
-    const toggle = document.getElementById("btnAdvancedToggle");
-    if (box.style.display === "none"){ box.style.display = "block"; toggle.classList.add("open"); }
-  } else {
-    warning.style.display = "none";
-  }
+  // La nota de ambigüedad de oro/plata solo se muestra si el usuario abre
+  // "Configurar instrumento" manualmente — ya no se fuerza a abrir el panel.
+  document.getElementById("metalsPipWarning").style.display = cat === "metals" ? "block" : "none";
 }
 
 function hasLiveSource(cat, pair){
@@ -910,7 +924,7 @@ function setCurrentPriceFromLive(){
   btn.disabled = false; btn.style.opacity = "1";
   if (price){
     priceEl.placeholder = "Ej. 1.0850";
-    priceEl.value = Number(price.toPrecision(6));
+    priceEl.value = price.toFixed(priceDecimals(cat));
     note.textContent = cat === "crypto" ? "Precio en vivo (CoinGecko)."
       : cat === "metals" ? "Precio en vivo (gold-api.com / goldprice.org)."
       : "Precio derivado de tasas de cambio en vivo (aprox.).";
@@ -998,6 +1012,7 @@ function saveCurrentPipsToHistory(){
 /* ---------------- Panel: Riesgo -> Lotaje ---------------- */
 function initRiskPanel(){
   fillSimplePairSelect(document.getElementById("riskPair"));
+  document.getElementById("riskPair").value = "metals|XAU/USD";
   ["riskCapital","riskPercent","riskPair","riskSlPips"].forEach(id=>
     document.getElementById(id).addEventListener("input", calcRisk));
   document.getElementById("btnSavePreset").addEventListener("click", saveCurrentPreset);
@@ -1020,7 +1035,7 @@ function calcRisk(){
   document.getElementById("riskAmountPreview").innerHTML =
     `Arriesgas <b>${fmtMoney(riskAmount, accountCurrency)}</b> en esta operación.`;
 
-  const pipValuePerLot = pipValuePerLotInAccount(cat, pair, def.pip, def.contract, accountCurrency);
+  const pipValuePerLot = pipValuePerLotInAccount(cat, pair, getPipSize(cat), def.contract, accountCurrency);
   const commission = parseFloat(settings.commissionPerLot)||0;
   const costPerLot = pipValuePerLot*slPips + commission;
   const lotSize = costPerLot>0 ? riskAmount/costPerLot : 0;
@@ -1124,7 +1139,7 @@ function solveRR(){
 
 function refreshRRDisplays(){
   const [cat] = document.getElementById("rrPair").value.split("|");
-  const pipSize = INSTRUMENTS[cat].pip;
+  const pipSize = getPipSize(cat);
   const entry = parseFloat(document.getElementById("rrEntry").value);
   const dir = rrDirection;
   const dec = priceDecimals(cat);
@@ -1143,6 +1158,7 @@ function refreshRRDisplays(){
 
 function initRRPanel(){
   fillSimplePairSelect(document.getElementById("rrPair"));
+  document.getElementById("rrPair").value = "metals|XAU/USD";
   setRatioDisplay(2);
   refreshRRDisplays();
 
@@ -1181,7 +1197,7 @@ function initRRPanel(){
     const [cat] = document.getElementById("rrPair").value.split("|");
     const entry = parseFloat(document.getElementById("rrEntry").value);
     const priceVal = parseFloat(document.getElementById("rrSlPrice").value);
-    if (isFinite(entry) && isFinite(priceVal)) rrSlPipsVal = slPipsFromPrice(priceVal, rrDirection, entry, INSTRUMENTS[cat].pip);
+    if (isFinite(entry) && isFinite(priceVal)) rrSlPipsVal = slPipsFromPrice(priceVal, rrDirection, entry, getPipSize(cat));
     solveRR(); refreshRRDisplays(); calcRR();
   });
   document.getElementById("rrTpPrice").addEventListener("input", ()=>{
@@ -1189,7 +1205,7 @@ function initRRPanel(){
     const [cat] = document.getElementById("rrPair").value.split("|");
     const entry = parseFloat(document.getElementById("rrEntry").value);
     const priceVal = parseFloat(document.getElementById("rrTpPrice").value);
-    if (isFinite(entry) && isFinite(priceVal)) rrTpPipsVal = tpPipsFromPrice(priceVal, rrDirection, entry, INSTRUMENTS[cat].pip);
+    if (isFinite(entry) && isFinite(priceVal)) rrTpPipsVal = tpPipsFromPrice(priceVal, rrDirection, entry, getPipSize(cat));
     solveRR(); refreshRRDisplays(); calcRR();
   });
   document.getElementById("rrRatioSelect").addEventListener("change", ()=>{
@@ -1210,7 +1226,7 @@ function calcRR(){
   const def = INSTRUMENTS[cat];
   const lots = parseFloat(document.getElementById("rrLot").value)||0;
   const accountCurrency = document.getElementById("accountCurrency").value;
-  const pipValuePerLot = pipValuePerLotInAccount(cat, pair, def.pip, def.contract, accountCurrency) * lots;
+  const pipValuePerLot = pipValuePerLotInAccount(cat, pair, getPipSize(cat), def.contract, accountCurrency) * lots;
 
   const riskPips = Math.abs(rrSlPipsVal)||0;
   const rewardPips = Math.abs(rrTpPipsVal)||0;
@@ -1281,20 +1297,37 @@ function initSettings(){
   document.getElementById("settingsCurrency").value = settings.accountCurrency;
   document.getElementById("settingsLeverage").value = settings.leverage;
   document.getElementById("settingsCommission").value = settings.commissionPerLot || "";
+  document.querySelectorAll("#settingsMetalsUnit [data-unit]").forEach(b=>
+    b.classList.toggle("active", b.dataset.unit === settings.metalsUnit));
 
   document.getElementById("btnSettings").addEventListener("click", ()=>{
+    // Refleja el valor guardado cada vez que se abre, por si se cerró sin guardar.
+    document.querySelectorAll("#settingsMetalsUnit [data-unit]").forEach(b=>
+      b.classList.toggle("active", b.dataset.unit === settings.metalsUnit));
     document.getElementById("sheetBackdrop").classList.add("show");
     document.getElementById("settingsSheet").classList.add("show");
   });
   document.getElementById("sheetBackdrop").addEventListener("click", closeSettings);
+
+  document.querySelectorAll("#settingsMetalsUnit [data-unit]").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      document.querySelectorAll("#settingsMetalsUnit [data-unit]").forEach(b=>b.classList.toggle("active", b===btn));
+    });
+  });
+
   document.getElementById("btnSaveSettings").addEventListener("click", ()=>{
     settings.accountCurrency = document.getElementById("settingsCurrency").value;
     settings.leverage = parseFloat(document.getElementById("settingsLeverage").value);
     const commissionVal = parseFloat(document.getElementById("settingsCommission").value);
     settings.commissionPerLot = isFinite(commissionVal) && commissionVal>0 ? commissionVal : null;
+    const unitBtn = document.querySelector("#settingsMetalsUnit .active");
+    settings.metalsUnit = unitBtn ? unitBtn.dataset.unit : "pip";
     store.set("pp_settings", settings);
+
     document.getElementById("accountCurrency").value = settings.accountCurrency;
     document.getElementById("leverage").value = settings.leverage;
+    applyInstrumentDefaults();
+    solvePipsTriangle();
     recalcAll();
     closeSettings();
   });
@@ -1308,6 +1341,7 @@ function closeSettings(){
 function recalcAll(){
   calcPips();
   calcRisk();
+  refreshRRDisplays();
   calcRR();
 }
 
