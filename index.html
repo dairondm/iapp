@@ -497,6 +497,7 @@ const COINGECKO_IDS = { "BTC/USD":"bitcoin", "ETH/USD":"ethereum" };
 let rates = null;        // { USD:1, EUR:.., ... }
 let ratesTimestamp = null;
 let cryptoPrices = {};   // { "BTC/USD": 65000 }
+let metalPrices = {};    // { "XAU/USD": 2650.5, "XAG/USD": 31.2 } (USD por onza)
 
 const store = {
   get(k, d){ try{ const v = localStorage.getItem(k); return v===null? d : JSON.parse(v); }catch(e){ return d; } },
@@ -621,7 +622,19 @@ async function fetchRates(force){
       if (data2[id]) cryptoPrices[pair] = data2[id].usd;
     });
   }catch(e){ /* ignore */ }
+  try{
+    // Endpoint no oficial usado por el propio widget de goldprice.org — gratis, sin API key.
+    // Puede dejar de funcionar sin aviso; por eso siempre cae a modo manual si falla.
+    const res3 = await fetch("https://data-asg.goldprice.org/dbXRates/USD");
+    const data3 = await res3.json();
+    const item = data3 && data3.items && data3.items[0];
+    if (item){
+      if (item.xauPrice) metalPrices["XAU/USD"] = item.xauPrice;
+      if (item.xagPrice) metalPrices["XAG/USD"] = item.xagPrice;
+    }
+  }catch(e){ /* ignore: cae a manual */ }
   updateRateStatus();
+  setCurrentPriceFromLive();
   recalcAll();
 }
 
@@ -705,7 +718,8 @@ function applyInstrumentDefaults(){
 function hasLiveSource(cat, pair){
   if (cat === "standard" || cat === "jpy") return true;
   if (cat === "crypto") return !!COINGECKO_IDS[pair];
-  return false; // metals e índices: sin API gratuita confiable, precio manual
+  if (cat === "metals") return pair === "XAU/USD" || pair === "XAG/USD";
+  return false; // índices: sin API gratuita confiable, precio manual
 }
 
 function setCurrentPriceFromLive(){
@@ -716,6 +730,7 @@ function setCurrentPriceFromLive(){
   let price = null;
 
   if (cat === "crypto") price = cryptoPrices[pair] || null;
+  else if (cat === "metals") price = metalPrices[pair] || null;
   else if (cat === "standard" || cat === "jpy"){
     const [base, quote] = pair.split("/");
     price = derivedPrice(base, quote);
@@ -730,13 +745,15 @@ function setCurrentPriceFromLive(){
   }
 
   btn.disabled = false; btn.style.opacity = "1";
-  priceEl.placeholder = "Ej. 1.0850";
   if (price){
+    priceEl.placeholder = "Ej. 1.0850";
     priceEl.value = Number(price.toPrecision(6));
-    note.textContent = cat === "crypto"
-      ? "Precio en vivo (CoinGecko)."
+    note.textContent = cat === "crypto" ? "Precio en vivo (CoinGecko)."
+      : cat === "metals" ? "Precio en vivo (goldprice.org, no oficial)."
       : "Precio derivado de tasas de cambio en vivo (aprox.).";
   } else {
+    priceEl.value = "";
+    priceEl.placeholder = "Toca Obtener para traer el precio";
     note.textContent = "Toca “Obtener” para traer el precio en vivo.";
   }
 }
