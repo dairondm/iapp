@@ -551,13 +551,13 @@
     Para cuentas RAW/ECN que cobran comisión aparte del spread. Escribe el costo total por 1 lote completo (ambos lados); la app lo escala a tu lotaje y lo descuenta del resultado.
   </div>
 
-  <label>Unidad para Oro/Plata</label>
-  <div class="toggle2" id="settingsMetalsUnit">
-    <button type="button" data-unit="pip" class="active">Pips (1 = $0.10)</button>
-    <button type="button" data-unit="point">Puntos (1 = $0.01)</button>
+  <label>Unidad de Pip (Forex y Metales)</label>
+  <div class="toggle2" id="settingsPipUnit">
+    <button type="button" data-unit="pip" class="active">Pip estándar</button>
+    <button type="button" data-unit="point">Punto / Pipette</button>
   </div>
   <div class="field-help">
-    Define el "Tamaño del pip" por defecto de XAU/USD y XAG/USD. Puedes verificarlo en tu bróker y cambiarlo aquí cuando quieras — se guarda para la próxima vez que abras la app.
+    Brokers modernos de 5 dígitos usan 1 pip = 10 points. <b>Pip estándar</b>: forex 4º decimal, oro $0.10. <b>Punto/Pipette</b>: forex 5º decimal, oro $0.01 — 10x más fino. Afecta divisas estándar, pares JPY y metales (no índices ni cripto). Se guarda para la próxima vez que abras la app.
   </div>
   <div class="rate-status" style="margin-top:2px;">
     <span class="dot" id="rateDot2"></span>
@@ -614,8 +614,8 @@ const store = {
   set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
 };
 
-let settings = store.get("pp_settings", { accountCurrency:"USD", leverage:100, commissionPerLot:null, metalsUnit:"pip" });
-if (!settings.metalsUnit) settings.metalsUnit = "pip"; // "pip" = 0.10 (10x el punto), "point" = 0.01
+let settings = store.get("pp_settings", { accountCurrency:"USD", leverage:100, commissionPerLot:null, pipUnit:"pip" });
+if (!settings.pipUnit) settings.pipUnit = "pip"; // "pip" = 0.10 (10x el punto), "point" = 0.01
 let history = store.get("pp_history", []);
 let presets = store.get("pp_presets", []);
 let cachedRates = store.get("pp_rates_cache", null);
@@ -674,11 +674,14 @@ function derivedPrice(base, quote){
 function currentCategory(){ return document.getElementById("category").value; }
 function currentPair(){ return document.getElementById("pair").value; }
 
-// Para oro/plata el tamaño del "pip" depende de la convención elegida en Ajustes:
-// "pip" = 0.10 (10x el punto, como en el ejemplo de Gemini) o "point" = 0.01.
-// El resto de las categorías no tienen esta ambigüedad y usan su valor fijo.
+// Convención moderna de brokers de 5 dígitos: 1 pip = 10 points/pipettes.
+// Forex estándar: pip=4º decimal (0.0001), point=5º decimal (0.00001).
+// Pares JPY:       pip=2º decimal (0.01),   point=3º decimal (0.001).
+// Oro/Plata:       pip=$0.10 (según Gemini), point=$0.01 (convención anterior).
+// Índices y cripto no tienen esta distinción y usan siempre su valor fijo.
 function getPipSize(cat){
-  if (cat === "metals") return settings.metalsUnit === "point" ? 0.01 : 0.10;
+  if (cat === "metals") return settings.pipUnit === "point" ? 0.01 : 0.10;
+  if (cat === "standard" || cat === "jpy") return settings.pipUnit === "point" ? INSTRUMENTS[cat].pip/10 : INSTRUMENTS[cat].pip;
   return INSTRUMENTS[cat].pip;
 }
 
@@ -1297,21 +1300,21 @@ function initSettings(){
   document.getElementById("settingsCurrency").value = settings.accountCurrency;
   document.getElementById("settingsLeverage").value = settings.leverage;
   document.getElementById("settingsCommission").value = settings.commissionPerLot || "";
-  document.querySelectorAll("#settingsMetalsUnit [data-unit]").forEach(b=>
-    b.classList.toggle("active", b.dataset.unit === settings.metalsUnit));
+  document.querySelectorAll("#settingsPipUnit [data-unit]").forEach(b=>
+    b.classList.toggle("active", b.dataset.unit === settings.pipUnit));
 
   document.getElementById("btnSettings").addEventListener("click", ()=>{
     // Refleja el valor guardado cada vez que se abre, por si se cerró sin guardar.
-    document.querySelectorAll("#settingsMetalsUnit [data-unit]").forEach(b=>
-      b.classList.toggle("active", b.dataset.unit === settings.metalsUnit));
+    document.querySelectorAll("#settingsPipUnit [data-unit]").forEach(b=>
+      b.classList.toggle("active", b.dataset.unit === settings.pipUnit));
     document.getElementById("sheetBackdrop").classList.add("show");
     document.getElementById("settingsSheet").classList.add("show");
   });
   document.getElementById("sheetBackdrop").addEventListener("click", closeSettings);
 
-  document.querySelectorAll("#settingsMetalsUnit [data-unit]").forEach(btn=>{
+  document.querySelectorAll("#settingsPipUnit [data-unit]").forEach(btn=>{
     btn.addEventListener("click", ()=>{
-      document.querySelectorAll("#settingsMetalsUnit [data-unit]").forEach(b=>b.classList.toggle("active", b===btn));
+      document.querySelectorAll("#settingsPipUnit [data-unit]").forEach(b=>b.classList.toggle("active", b===btn));
     });
   });
 
@@ -1320,8 +1323,8 @@ function initSettings(){
     settings.leverage = parseFloat(document.getElementById("settingsLeverage").value);
     const commissionVal = parseFloat(document.getElementById("settingsCommission").value);
     settings.commissionPerLot = isFinite(commissionVal) && commissionVal>0 ? commissionVal : null;
-    const unitBtn = document.querySelector("#settingsMetalsUnit .active");
-    settings.metalsUnit = unitBtn ? unitBtn.dataset.unit : "pip";
+    const unitBtn = document.querySelector("#settingsPipUnit .active");
+    settings.pipUnit = unitBtn ? unitBtn.dataset.unit : "pip";
     store.set("pp_settings", settings);
 
     document.getElementById("accountCurrency").value = settings.accountCurrency;
