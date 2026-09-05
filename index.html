@@ -19,7 +19,6 @@
     --bg: #070b12;
     --bg-2: #0b131f;
     --card: #101a2b;
-    --card-2: #14213570;
     --border: #1e2c40;
     --accent: #2dd4bf;
     --accent-2: #34d399;
@@ -46,6 +45,7 @@
     min-height:100vh;
     -webkit-font-smoothing:antialiased;
   }
+  svg.i{ flex:none; }
   .app{
     max-width:480px;
     margin:0 auto;
@@ -54,7 +54,7 @@
   }
   header.top{
     display:flex;align-items:center;gap:12px;
-    margin-bottom:18px;
+    margin-bottom:20px;
   }
   .logo{
     width:40px;height:40px;border-radius:11px;overflow:hidden;flex:none;
@@ -62,14 +62,14 @@
   }
   .logo img{width:100%;height:100%;display:block;}
   header.top h1{
-    font-size:18px;margin:0;font-weight:700;letter-spacing:-0.2px;
+    font-size:16.5px;margin:0;font-weight:800;letter-spacing:0.6px;
+    text-transform:uppercase;
   }
-  header.top .sub{font-size:12px;color:var(--muted);margin-top:1px;}
   .gear{
     margin-left:auto;width:38px;height:38px;border-radius:12px;
     background:var(--card);border:1px solid var(--border);
     display:flex;align-items:center;justify-content:center;
-    color:var(--muted);font-size:18px;cursor:pointer;
+    color:var(--muted);cursor:pointer;
   }
 
   .card{
@@ -104,12 +104,14 @@
   }
   .seg button.active{background:var(--accent);color:#04201c;}
 
-  .stepper{display:flex;align-items:stretch;gap:8px;margin-bottom:14px;}
+  .stepper{display:flex;align-items:stretch;gap:6px;margin-bottom:10px;}
   .stepper button{
-    width:44px;flex:none;border:1px solid var(--border);background:#0b1420;
-    color:var(--accent);font-size:20px;border-radius:11px;font-weight:700;
+    width:36px;flex:none;border:1px solid var(--border);background:#0b1420;
+    color:var(--accent);font-size:14px;border-radius:10px;font-weight:700;padding:0;
   }
   .stepper input{margin-bottom:0;text-align:center;}
+
+  .field-help{font-size:11px;color:var(--muted);margin:-6px 0 14px;line-height:1.4;}
 
   .result{
     background:var(--accent-soft);
@@ -132,10 +134,6 @@
     display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--muted);
     margin: -4px 0 12px;
   }
-  .rate-status button{
-    background:none;border:none;color:var(--accent);font-size:11.5px;font-weight:600;
-    padding:2px 0; cursor:pointer;
-  }
   .dot{width:6px;height:6px;border-radius:50%;background:var(--accent-2);flex:none;}
   .dot.off{background:#e5b95c;}
 
@@ -154,9 +152,17 @@
   .dir-toggle button{
     flex:1;padding:11px;border-radius:11px;border:1px solid var(--border);
     background:#0b1420;color:var(--muted);font-weight:700;font-size:14px;
+    display:flex;align-items:center;justify-content:center;gap:7px;
   }
   .dir-toggle button.buy.active{background:rgba(52,211,153,0.16);border-color:var(--up);color:var(--up);}
   .dir-toggle button.sell.active{background:rgba(248,113,113,0.16);border-color:var(--down);color:var(--down);}
+
+  .link-btn{
+    background:none;border:none;color:var(--accent);font-size:12.5px;font-weight:600;
+    padding:0 0 12px;cursor:pointer;display:flex;align-items:center;gap:5px;
+  }
+  .link-btn svg{transition:transform .15s;}
+  .link-btn.open svg{transform:rotate(180deg);}
 
   nav.tabs{
     position:fixed;left:0;right:0;bottom:0;
@@ -167,10 +173,9 @@
   }
   nav.tabs button{
     flex:1;background:none;border:none;color:var(--muted);
-    display:flex;flex-direction:column;align-items:center;gap:3px;
+    display:flex;flex-direction:column;align-items:center;gap:4px;
     font-size:10.5px;font-weight:600;padding:8px 2px;border-radius:10px;
   }
-  nav.tabs button .ic{font-size:19px;line-height:1;}
   nav.tabs button.active{color:var(--accent);}
 
   .panel{display:none;}
@@ -180,20 +185,20 @@
   .hist-item{
     display:flex;justify-content:space-between;align-items:center;
     padding:11px 4px;border-bottom:1px solid var(--border);
-    font-size:13.5px;
+    font-size:13.5px;gap:10px;
   }
   .hist-item:last-child{border-bottom:none;}
   .hist-item .l{color:var(--text);font-weight:600;}
   .hist-item .l small{display:block;color:var(--muted);font-weight:400;font-size:11px;margin-top:2px;}
-  .hist-item .r{font-weight:700;}
+  .hist-item .r{font-weight:700;text-align:right;white-space:nowrap;}
   .empty{color:var(--muted);font-size:13px;text-align:center;padding:20px 0;}
 
   .preset-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
   .chip{
     padding:7px 12px;border-radius:20px;background:#0b1420;border:1px solid var(--border);
-    font-size:12.5px;color:var(--text);display:flex;align-items:center;gap:6px;
+    font-size:12.5px;color:var(--text);display:flex;align-items:center;gap:7px;
   }
-  .chip .x{color:var(--muted);font-weight:700;cursor:pointer;}
+  .chip .x{color:var(--muted);display:flex;cursor:pointer;}
 
   .sheet-backdrop{
     position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:40;display:none;
@@ -210,7 +215,6 @@
   .sheet.show{transform:translateY(0);}
   .sheet h3{margin:0 0 14px;font-size:16px;}
   .sheet-handle{width:36px;height:4px;background:var(--border);border-radius:3px;margin:0 auto 14px;}
-  .close-x{position:absolute;right:16px;top:14px;color:var(--muted);font-size:20px;}
 
   .toggle2{display:flex;gap:8px;margin-bottom:14px;}
   .toggle2 button{
@@ -218,6 +222,21 @@
     background:#0b1420;color:var(--muted);font-size:12.5px;font-weight:600;
   }
   .toggle2 button.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);}
+
+  .step-head{display:flex;align-items:center;gap:9px;margin:4px 0 12px;}
+  .step-head:not(:first-child){margin-top:18px;}
+  .step-num{
+    width:22px;height:22px;border-radius:50%;background:var(--accent-soft);color:var(--accent);
+    font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:none;
+  }
+  .step-title{font-size:13.5px;font-weight:700;color:var(--text);}
+
+  .explain{
+    background:#0b1420;border:1px solid var(--border);border-radius:12px;
+    padding:13px 14px;font-size:12.5px;color:var(--muted);line-height:1.55;margin-top:12px;
+  }
+  .explain b{color:var(--text);}
+  .explain.accent{border-color:rgba(45,212,191,0.35);background:var(--accent-soft);color:var(--text);}
 </style>
 </head>
 <body>
@@ -225,11 +244,14 @@
 
   <header class="top">
     <div class="logo"><img src="icons/icon-180.png" alt=""></div>
-    <div>
-      <h1>Pips & Profit</h1>
-      <div class="sub" id="rateHeaderNote">Calculadora de trading</div>
+    <h1>Calculadora de Trading</h1>
+    <div class="gear" id="btnSettings">
+      <svg class="i" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="4" y1="6" x2="20" y2="6"/><circle cx="9" cy="6" r="2" fill="#070b12"/>
+        <line x1="4" y1="12" x2="20" y2="12"/><circle cx="15" cy="12" r="2" fill="#070b12"/>
+        <line x1="4" y1="18" x2="20" y2="18"/><circle cx="11" cy="18" r="2" fill="#070b12"/>
+      </svg>
     </div>
-    <div class="gear" id="btnSettings">⚙️</div>
   </header>
 
   <!-- ============ PANEL 1: PIPS -> DINERO ============ -->
@@ -247,8 +269,9 @@
           <select id="pair"></select>
         </div>
       </div>
-      <button type="button" id="btnAdvancedToggle" style="background:none;border:none;color:var(--accent);font-size:12.5px;font-weight:600;padding:0 0 12px;cursor:pointer;display:flex;align-items:center;gap:4px;">
-        Ajustes avanzados del instrumento <span id="advancedChevron">▾</span>
+      <button type="button" class="link-btn" id="btnAdvancedToggle">
+        Configurar instrumento
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
       <div id="advancedFields" style="display:none;">
         <div class="row">
@@ -261,22 +284,27 @@
             <input type="number" id="contractSize" step="any">
           </div>
         </div>
-        <div style="font-size:11px;color:var(--muted);margin:-8px 0 12px;line-height:1.4;">
+        <div class="field-help">
           Se autocompletan según el instrumento (ej. 100,000 divisa base para forex, 100 onzas para oro, 1 contrato para índices/cripto). Solo edítalos si tu bróker usa un tamaño distinto — el cálculo normal solo necesita el lotaje.
         </div>
       </div>
       <div class="rate-status">
         <span class="dot" id="rateDot"></span>
         <span id="rateStatusText">Tasas sin cargar</span>
-        <button id="btnRefreshRates">Actualizar ↻</button>
       </div>
     </div>
 
     <div class="card">
       <h2>Operación</h2>
       <div class="dir-toggle">
-        <button class="buy active" data-dir="buy">▲ Compra (Buy)</button>
-        <button class="sell" data-dir="sell">▼ Venta (Sell)</button>
+        <button class="buy active" data-dir="buy">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="17" x2="17" y2="4"/><polyline points="7 4 17 4 17 14"/></svg>
+          Compra (Buy)
+        </button>
+        <button class="sell" data-dir="sell">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="4" x2="17" y2="17"/><polyline points="7 17 17 17 17 7"/></svg>
+          Venta (Sell)
+        </button>
       </div>
       <div class="row">
         <div>
@@ -296,32 +324,40 @@
           </select>
         </div>
       </div>
-      <label>Tamaño de la posición (lotes)</label>
+
+      <label>Lotaje</label>
       <input type="number" id="lotSize" value="1" step="0.01" min="0">
 
-      <label>Distancia en pips (+ a favor / − en contra)</label>
+      <label>Distancia en pips</label>
       <div class="stepper">
         <button id="pipsMinus10">−10</button>
         <input type="number" id="pipsDistance" value="50" step="1">
         <button id="pipsPlus10">+10</button>
       </div>
 
-      <label>Precio actual (opcional, para margen)</label>
+      <label>Precio de entrada</label>
       <div class="row">
-        <div><input type="number" id="currentPrice" step="any" placeholder="Ej. 1.0850" style="margin-bottom:0;"></div>
-        <div style="flex:none;width:110px;"><button class="btn ghost sm" id="btnFetchPrice" style="width:100%;height:100%;">Obtener</button></div>
+        <div><input type="number" id="priceEntry" step="any" placeholder="Ej. 1.0850" style="margin-bottom:0;"></div>
+        <div style="flex:none;width:100px;"><button class="btn ghost sm" id="btnFetchPrice" style="width:100%;height:100%;">Obtener</button></div>
       </div>
-      <div style="font-size:11px;color:var(--muted);margin:-8px 0 14px;" id="priceSourceNote">—</div>
+      <div style="font-size:11px;color:var(--muted);margin:8px 0 14px;" id="priceSourceNote">—</div>
 
-      <div class="result" id="pipsResultBox">
-        <div class="label">Resultado</div>
-        <div class="value" id="pipsResultValue">$0.00</div>
-        <div class="note" id="pipsResultNote">Ingresa los datos para calcular</div>
+      <label>Precio de salida</label>
+      <input type="number" id="priceExit" step="any" placeholder="Se calcula o lo escribes tú">
+
+      <div class="field-help">
+        Completa dos de estos tres: <b>Distancia</b>, <b>Entrada</b> o <b>Salida</b> — el que falta se calcula solo (+ = a favor, − = en contra).
       </div>
 
       <div class="grid2">
         <div class="mini"><div class="l">Valor por pip</div><div class="v" id="pipValueOut">—</div></div>
         <div class="mini"><div class="l">Margen requerido</div><div class="v" id="marginOut">—</div></div>
+      </div>
+
+      <div class="result" id="pipsResultBox" style="margin-top:14px;">
+        <div class="label">Resultado</div>
+        <div class="value" id="pipsResultValue">$0.00</div>
+        <div class="note" id="pipsResultNote">Ingresa los datos para calcular</div>
       </div>
 
       <button class="btn" style="margin-top:14px;" id="btnSavePips">Guardar en historial</button>
@@ -331,13 +367,12 @@
   <!-- ============ PANEL 2: RIESGO -> LOTAJE ============ -->
   <section class="panel" id="panel-risk">
     <div class="card">
-      <h2>Perfiles guardados</h2>
+      <div class="step-head">
+        <span class="step-num">1</span>
+        <span class="step-title">¿Cuánto vas a arriesgar?</span>
+      </div>
       <div class="preset-row" id="presetChips"></div>
-      <button class="btn ghost sm" id="btnSavePreset">+ Guardar perfil actual</button>
-    </div>
 
-    <div class="card">
-      <h2>Gestión de riesgo</h2>
       <div class="row">
         <div>
           <label>Capital de la cuenta</label>
@@ -347,6 +382,13 @@
           <label>Riesgo (%)</label>
           <input type="number" id="riskPercent" value="1" step="0.1">
         </div>
+      </div>
+      <div class="explain accent" id="riskAmountPreview">Arriesgas <b>$10.00</b> en esta operación.</div>
+      <button class="btn ghost sm" id="btnSavePreset" style="margin-top:12px;">+ Guardar como perfil rápido</button>
+
+      <div class="step-head">
+        <span class="step-num">2</span>
+        <span class="step-title">Tu operación</span>
       </div>
       <div class="row">
         <div>
@@ -359,6 +401,10 @@
         </div>
       </div>
 
+      <div class="step-head">
+        <span class="step-num">3</span>
+        <span class="step-title">Resultado</span>
+      </div>
       <div class="result" id="riskResultBox">
         <div class="label">Lotaje recomendado</div>
         <div class="value" id="riskLotOut">0.00</div>
@@ -369,6 +415,8 @@
         <div class="mini"><div class="l">Riesgo en dinero</div><div class="v" id="riskAmountOut">—</div></div>
         <div class="mini"><div class="l">Valor del pip / lote</div><div class="v" id="riskPipValueOut">—</div></div>
       </div>
+
+      <button class="btn" style="margin-top:14px;" id="btnUseLotInPips">Usar este lotaje en Pips →</button>
     </div>
   </section>
 
@@ -377,37 +425,65 @@
     <div class="card">
       <h2>Ratio Riesgo / Beneficio</h2>
       <div class="dir-toggle">
-        <button class="buy active" data-rrdir="buy">▲ Compra</button>
-        <button class="sell" data-rrdir="sell">▼ Venta</button>
-      </div>
-      <div class="toggle2">
-        <button class="active" data-rrmode="price">Por precio</button>
-        <button data-rrmode="pips">Por pips</button>
-      </div>
-
-      <div id="rrPriceInputs">
-        <div class="row">
-          <div><label>Entrada</label><input type="number" id="rrEntry" step="any" placeholder="1.0850"></div>
-          <div><label>Stop Loss</label><input type="number" id="rrSl" step="any" placeholder="1.0800"></div>
-        </div>
-        <label>Take Profit</label>
-        <input type="number" id="rrTp" step="any" placeholder="1.0950">
-      </div>
-      <div id="rrPipsInputs" style="display:none;">
-        <div class="row">
-          <div><label>Pips de riesgo (SL)</label><input type="number" id="rrSlPips" step="1" value="30"></div>
-          <div><label>Pips de beneficio (TP)</label><input type="number" id="rrTpPips" step="1" value="60"></div>
-        </div>
+        <button class="buy active" data-rrdir="buy">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="17" x2="17" y2="4"/><polyline points="7 4 17 4 17 14"/></svg>
+          Compra
+        </button>
+        <button class="sell" data-rrdir="sell">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="4" x2="17" y2="17"/><polyline points="7 17 17 17 17 7"/></svg>
+          Venta
+        </button>
       </div>
 
       <div class="row">
         <div><label>Instrumento</label><select id="rrPair"></select></div>
         <div><label>Lotaje</label><input type="number" id="rrLot" value="1" step="0.01"></div>
       </div>
+      <label>Precio de entrada (opcional, para ver SL/TP en precio)</label>
+      <input type="number" id="rrEntry" step="any" placeholder="Ej. 1.0850">
+
+      <div class="toggle2">
+        <button class="active" data-rrmode="pips">Por pips</button>
+        <button data-rrmode="price">Por precio</button>
+      </div>
+
+      <div id="rrPipsInputs">
+        <div class="row">
+          <div><label>Stop Loss (pips)</label><input type="number" id="rrSlPips" step="1" value="30"></div>
+          <div><label>Take Profit (pips)</label><input type="number" id="rrTpPips" step="1" value="60"></div>
+        </div>
+      </div>
+      <div id="rrPriceInputs" style="display:none;">
+        <div class="row">
+          <div><label>Precio Stop Loss</label><input type="number" id="rrSlPrice" step="any"></div>
+          <div><label>Precio Take Profit</label><input type="number" id="rrTpPrice" step="any"></div>
+        </div>
+      </div>
+
+      <label>Relación Riesgo : Beneficio</label>
+      <select id="rrRatioSelect">
+        <option value="1">1 : 1</option>
+        <option value="1.5">1 : 1.5</option>
+        <option value="2" selected>1 : 2</option>
+        <option value="2.5">1 : 2.5</option>
+        <option value="3">1 : 3</option>
+        <option value="0.5">2 : 1</option>
+        <option value="0.6667">3 : 2</option>
+        <option value="1.5">2 : 3</option>
+        <option value="custom">Personalizada…</option>
+      </select>
+      <div class="row" id="rrRatioCustomRow" style="display:none;">
+        <div><label>Riesgo</label><input type="number" id="rrRatioCustomRisk" value="1" step="any"></div>
+        <div><label>Beneficio</label><input type="number" id="rrRatioCustomReward" value="2" step="any"></div>
+      </div>
+
+      <div class="field-help">
+        Completa dos de: <b>Stop Loss</b>, <b>Take Profit</b> o la <b>Relación</b> — el que falta se calcula solo.
+      </div>
 
       <div class="result" id="rrResultBox">
         <div class="label">Relación Riesgo : Beneficio</div>
-        <div class="value" id="rrRatioOut">1 : 0</div>
+        <div class="value" id="rrRatioOut">1 : 2.00</div>
         <div class="note" id="rrNote">—</div>
       </div>
 
@@ -415,6 +491,8 @@
         <div class="mini"><div class="l">Monto en riesgo</div><div class="v" id="rrRiskAmountOut">—</div></div>
         <div class="mini"><div class="l">Monto proyectado</div><div class="v" id="rrProfitAmountOut">—</div></div>
       </div>
+
+      <div class="explain" id="rrExplain">—</div>
     </div>
   </section>
 
@@ -428,10 +506,22 @@
   </section>
 
   <nav class="tabs">
-    <button class="active" data-tab="panel-pips"><span class="ic">📊</span>Pips</button>
-    <button data-tab="panel-risk"><span class="ic">🛡️</span>Riesgo</button>
-    <button data-tab="panel-rr"><span class="ic">⚖️</span>R:R</button>
-    <button data-tab="panel-history"><span class="ic">🕒</span>Historial</button>
+    <button class="active" data-tab="panel-pips">
+      <svg class="i" viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="10" width="4.5" height="10"/><rect x="9.75" y="6" width="4.5" height="14"/><rect x="16.5" y="2.5" width="4.5" height="17.5"/></svg>
+      Pips
+    </button>
+    <button data-tab="panel-risk">
+      <svg class="i" viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l7.5 3v6c0 5-3.2 8.5-7.5 10-4.3-1.5-7.5-5-7.5-10v-6l7.5-3z"/><path d="M8.7 12.2l2.3 2.3 4.3-4.3"/></svg>
+      Riesgo
+    </button>
+    <button data-tab="panel-rr">
+      <svg class="i" viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="20"/><line x1="5" y1="7" x2="19" y2="7"/><path d="M5 7l-3 6a3 3 0 0 0 6 0z"/><path d="M19 7l-3 6a3 3 0 0 0 6 0z"/><line x1="8" y1="21" x2="16" y2="21"/></svg>
+      R:R
+    </button>
+    <button data-tab="panel-history">
+      <svg class="i" viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3.2 2"/></svg>
+      Historial
+    </button>
   </nav>
 </div>
 
@@ -452,7 +542,12 @@
     <option value="500">1:500</option>
     <option value="1000">1:1000</option>
   </select>
-  <div class="rate-status" style="margin-top:6px;">
+  <label>Comisión por lote (ida y vuelta, opcional)</label>
+  <input type="number" id="settingsCommission" step="any" placeholder="Ej. 6 — déjalo vacío si no aplica">
+  <div class="field-help">
+    Para cuentas RAW/ECN que cobran comisión aparte del spread. Escribe el costo total por 1 lote completo (ambos lados); la app lo escala a tu lotaje y lo descuenta del resultado.
+  </div>
+  <div class="rate-status" style="margin-top:2px;">
     <span class="dot" id="rateDot2"></span>
     <span id="rateStatusText2">—</span>
   </div>
@@ -493,23 +588,21 @@ const INSTRUMENTS = {
 };
 
 const CURRENCIES = ["USD","EUR","GBP","JPY","CHF","CAD","AUD","NZD","MXN"];
-
 const FALLBACK_RATES = { USD:1, EUR:0.92, GBP:0.79, JPY:150, CHF:0.88, CAD:1.36, AUD:1.52, NZD:1.65, MXN:18.5 };
-
 const COINGECKO_IDS = { "BTC/USD":"bitcoin", "ETH/USD":"ethereum" };
 
 /* ---------------- State ---------------- */
-let rates = null;        // { USD:1, EUR:.., ... }
+let rates = null;
 let ratesTimestamp = null;
-let cryptoPrices = {};   // { "BTC/USD": 65000 }
-let metalPrices = {};    // { "XAU/USD": 2650.5, "XAG/USD": 31.2 } (USD por onza)
+let cryptoPrices = {};
+let metalPrices = {};
 
 const store = {
   get(k, d){ try{ const v = localStorage.getItem(k); return v===null? d : JSON.parse(v); }catch(e){ return d; } },
   set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
 };
 
-let settings = store.get("pp_settings", { accountCurrency:"USD", leverage:100 });
+let settings = store.get("pp_settings", { accountCurrency:"USD", leverage:100, commissionPerLot:null });
 let history = store.get("pp_history", []);
 let presets = store.get("pp_presets", []);
 let cachedRates = store.get("pp_rates_cache", null);
@@ -517,7 +610,18 @@ if (cachedRates){ rates = cachedRates.rates; ratesTimestamp = cachedRates.ts; }
 
 let direction = "buy";
 let rrDirection = "buy";
-let rrMode = "price";
+let rrMode = "pips";
+
+// "Least-recently-touched" queues driving the bidirectional solvers.
+let pipsOrder = ["priceExit","priceEntry","pipsDistance"]; // pipsOrder[0] = field to auto-compute
+let rrOrder = ["tp","sl","ratio"];
+let rrSlPipsVal = 30, rrTpPipsVal = 60;
+
+function touch(order, key){
+  const i = order.indexOf(key);
+  if (i !== -1) order.splice(i,1);
+  order.push(key);
+}
 
 /* ---------------- Helpers ---------------- */
 function fmtMoney(n, cur){
@@ -528,17 +632,17 @@ function fmtMoney(n, cur){
   return (n<0?"-":"") + sym + abs.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 }
 
-function quoteCurrencyOf(pair, category){
-  if (category==="metals" || category==="indices" || category==="crypto") return "USD";
-  const parts = pair.split("/");
-  return parts[1];
-}
-function baseCurrencyOf(pair, category){
-  if (category==="metals" || category==="indices" || category==="crypto") return null;
-  return pair.split("/")[0];
+function priceDecimals(cat){
+  if (cat === "standard") return 5;
+  if (cat === "jpy") return 3;
+  return 2; // metales, índices, cripto
 }
 
-// Convert an amount expressed in `fromCur` into `toCur` using the USD-based rates table.
+function quoteCurrencyOf(pair, category){
+  if (category==="metals" || category==="indices" || category==="crypto") return "USD";
+  return pair.split("/")[1];
+}
+
 function convert(amount, fromCur, toCur){
   const R = rates || FALLBACK_RATES;
   if (fromCur === toCur) return amount;
@@ -546,7 +650,6 @@ function convert(amount, fromCur, toCur){
   return toCur === "USD" ? amountUsd : amountUsd * (R[toCur] || FALLBACK_RATES[toCur] || 1);
 }
 
-// Synthetic FX price BASE/QUOTE derived from the USD rate table.
 function derivedPrice(base, quote){
   const R = rates || FALLBACK_RATES;
   const rb = base === "USD" ? 1 : (R[base] || FALLBACK_RATES[base] || null);
@@ -560,8 +663,14 @@ function currentPair(){ return document.getElementById("pair").value; }
 
 function pipValuePerLotInAccount(category, pair, pipSize, contractSize, accountCurrency){
   const quote = quoteCurrencyOf(pair, category);
-  const valueInQuote = pipSize * contractSize; // per 1 lot
+  const valueInQuote = pipSize * contractSize;
   return convert(valueInQuote, quote, accountCurrency);
+}
+
+function commissionCost(lots){
+  const c = parseFloat(settings.commissionPerLot);
+  if (!c || c<=0) return 0;
+  return c * lots;
 }
 
 /* ---------------- Populate selects ---------------- */
@@ -630,15 +739,11 @@ async function fetchRates(force){
   await fetchMetalPrices();
   updateRateStatus();
   setCurrentPriceFromLive();
+  solvePipsTriangle();
   recalcAll();
 }
 
-// Precio del oro/plata: no existe una API comercial gratis+ilimitada+sin-key
-// con CORS abierto para navegador, así que se intentan dos fuentes no oficiales
-// en cadena. Si ambas fallan (CORS, caída del servicio, etc.), cae a manual
-// sin romper la app — igual que el resto del modo híbrido.
 async function fetchMetalPrices(){
-  // Fuente 1: gold-api.com — gratis, sin API key, pensada para uso público.
   try{
     const [gRes, sRes] = await Promise.all([
       fetch("https://api.gold-api.com/price/XAU"),
@@ -648,8 +753,6 @@ async function fetchMetalPrices(){
     if (gData && typeof gData.price === "number") metalPrices["XAU/USD"] = gData.price;
     if (sData && typeof sData.price === "number") metalPrices["XAG/USD"] = sData.price;
   }catch(e){ /* sigue con la fuente 2 */ }
-
-  // Fuente 2 (respaldo): endpoint no oficial del widget de goldprice.org.
   if (!metalPrices["XAU/USD"] || !metalPrices["XAG/USD"]){
     try{
       const res = await fetch("https://data-asg.goldprice.org/dbXRates/USD");
@@ -690,39 +793,54 @@ function initPipsPanel(){
   document.getElementById("accountCurrency").value = settings.accountCurrency;
   document.getElementById("leverage").value = settings.leverage;
   applyInstrumentDefaults();
+  solvePipsTriangle();
 
   document.getElementById("category").addEventListener("change", ()=>{
     fillPairSelect(document.getElementById("category"), document.getElementById("pair"));
     applyInstrumentDefaults();
-    calcPips();
+    solvePipsTriangle(); calcPips();
   });
-  document.getElementById("pair").addEventListener("change", ()=>{ applyInstrumentDefaults(); calcPips(); });
+  document.getElementById("pair").addEventListener("change", ()=>{
+    applyInstrumentDefaults(); solvePipsTriangle(); calcPips();
+  });
 
-  ["pipSize","contractSize","lotSize","pipsDistance","currentPrice","accountCurrency","leverage"]
+  ["pipSize","contractSize","lotSize","accountCurrency","leverage"]
     .forEach(id=> document.getElementById(id).addEventListener("input", calcPips));
 
-  document.getElementById("btnAdvancedToggle").addEventListener("click", ()=>{
+  document.getElementById("priceEntry").addEventListener("input", ()=>{
+    touch(pipsOrder,"priceEntry"); solvePipsTriangle(); calcPips();
+  });
+  document.getElementById("priceExit").addEventListener("input", ()=>{
+    touch(pipsOrder,"priceExit"); solvePipsTriangle(); calcPips();
+  });
+  document.getElementById("pipsDistance").addEventListener("input", ()=>{
+    touch(pipsOrder,"pipsDistance"); solvePipsTriangle(); calcPips();
+  });
+
+  document.getElementById("btnAdvancedToggle").addEventListener("click", (e)=>{
+    const btn = e.currentTarget;
     const box = document.getElementById("advancedFields");
-    const chevron = document.getElementById("advancedChevron");
     const open = box.style.display !== "none";
     box.style.display = open ? "none" : "block";
-    chevron.textContent = open ? "▾" : "▴";
+    btn.classList.toggle("open", !open);
   });
 
   document.getElementById("pipsMinus10").addEventListener("click", ()=>{
     const el = document.getElementById("pipsDistance");
-    el.value = (parseFloat(el.value)||0) - 10; calcPips();
+    el.value = (parseFloat(el.value)||0) - 10;
+    touch(pipsOrder,"pipsDistance"); solvePipsTriangle(); calcPips();
   });
   document.getElementById("pipsPlus10").addEventListener("click", ()=>{
     const el = document.getElementById("pipsDistance");
-    el.value = (parseFloat(el.value)||0) + 10; calcPips();
+    el.value = (parseFloat(el.value)||0) + 10;
+    touch(pipsOrder,"pipsDistance"); solvePipsTriangle(); calcPips();
   });
 
   document.querySelectorAll(".dir-toggle [data-dir]").forEach(btn=>{
     btn.addEventListener("click", ()=>{
       direction = btn.dataset.dir;
       document.querySelectorAll(".dir-toggle [data-dir]").forEach(b=>b.classList.toggle("active", b===btn));
-      calcPips();
+      solvePipsTriangle(); calcPips();
     });
   });
 
@@ -732,8 +850,8 @@ function initPipsPanel(){
     const original = btn.textContent;
     btn.textContent = "…"; btn.disabled = true;
     await fetchRates(true);
-    setCurrentPriceFromLive();
-    calcPips();
+    touch(pipsOrder,"priceEntry");
+    solvePipsTriangle(); calcPips();
     btn.textContent = original; btn.disabled = false;
   });
 
@@ -752,12 +870,12 @@ function hasLiveSource(cat, pair){
   if (cat === "standard" || cat === "jpy") return true;
   if (cat === "crypto") return !!COINGECKO_IDS[pair];
   if (cat === "metals") return pair === "XAU/USD" || pair === "XAG/USD";
-  return false; // índices: sin API gratuita confiable, precio manual
+  return false;
 }
 
 function setCurrentPriceFromLive(){
   const cat = currentCategory(), pair = currentPair();
-  const priceEl = document.getElementById("currentPrice");
+  const priceEl = document.getElementById("priceEntry");
   const note = document.getElementById("priceSourceNote");
   const btn = document.getElementById("btnFetchPrice");
   let price = null;
@@ -770,7 +888,6 @@ function setCurrentPriceFromLive(){
   }
 
   if (!hasLiveSource(cat, pair)){
-    priceEl.value = "";
     priceEl.placeholder = "Ingresa el precio manualmente";
     note.textContent = `No hay fuente en vivo gratuita para ${pair} — ingresa el precio manualmente.`;
     btn.disabled = true; btn.style.opacity = "0.45";
@@ -782,12 +899,36 @@ function setCurrentPriceFromLive(){
     priceEl.placeholder = "Ej. 1.0850";
     priceEl.value = Number(price.toPrecision(6));
     note.textContent = cat === "crypto" ? "Precio en vivo (CoinGecko)."
-      : cat === "metals" ? "Precio en vivo (goldprice.org, no oficial)."
+      : cat === "metals" ? "Precio en vivo (gold-api.com / goldprice.org)."
       : "Precio derivado de tasas de cambio en vivo (aprox.).";
   } else {
-    priceEl.value = "";
     priceEl.placeholder = "Toca Obtener para traer el precio";
     note.textContent = "Toca “Obtener” para traer el precio en vivo.";
+  }
+}
+
+// Bidirectional solver: Entrada, Salida, Distancia en pips (any 2 -> 3rd).
+function solvePipsTriangle(){
+  const pipSize = parseFloat(document.getElementById("pipSize").value)||0;
+  if (!pipSize) return;
+  const cat = currentCategory();
+  const dirMul = direction === "buy" ? 1 : -1;
+  const decimals = priceDecimals(cat);
+
+  const entradaEl = document.getElementById("priceEntry");
+  const salidaEl = document.getElementById("priceExit");
+  const pipsEl = document.getElementById("pipsDistance");
+  const entrada = parseFloat(entradaEl.value);
+  const salida = parseFloat(salidaEl.value);
+  const pips = parseFloat(pipsEl.value);
+
+  const target = pipsOrder[0];
+  if (target === "priceExit" && isFinite(entrada) && isFinite(pips)){
+    salidaEl.value = (entrada + pips*pipSize*dirMul).toFixed(decimals);
+  } else if (target === "priceEntry" && isFinite(salida) && isFinite(pips)){
+    entradaEl.value = (salida - pips*pipSize*dirMul).toFixed(decimals);
+  } else if (target === "pipsDistance" && isFinite(entrada) && isFinite(salida)){
+    pipsEl.value = Math.round(((salida-entrada)/pipSize)*dirMul*10)/10;
   }
 }
 
@@ -799,21 +940,24 @@ function calcPips(){
   const pips = parseFloat(document.getElementById("pipsDistance").value)||0;
   const accountCurrency = document.getElementById("accountCurrency").value;
   const leverage = parseFloat(document.getElementById("leverage").value)||1;
-  const price = parseFloat(document.getElementById("currentPrice").value)||0;
+  const price = parseFloat(document.getElementById("priceEntry").value)||0;
 
   const quote = quoteCurrencyOf(pair, cat);
   const pipValueAccount = pipValuePerLotInAccount(cat, pair, pipSize, contract, accountCurrency) * lots;
-  const total = pipValueAccount * pips;
+  const gross = pipValueAccount * pips;
+  const commission = commissionCost(lots);
+  const net = gross - commission;
 
   document.getElementById("pipValueOut").textContent = fmtMoney(pipValueAccount, accountCurrency);
 
   const box = document.getElementById("pipsResultBox");
   const val = document.getElementById("pipsResultValue");
-  val.textContent = fmtMoney(total, accountCurrency);
-  val.className = "value " + (total>=0 ? "pos":"neg");
-  box.classList.toggle("negative", total<0);
-  document.getElementById("pipsResultNote").textContent =
-    `${lots} lote(s) de ${pair} · ${pips>=0?"+":""}${pips} pips (${direction==="buy"?"compra":"venta"})`;
+  val.textContent = fmtMoney(net, accountCurrency);
+  val.className = "value " + (net>=0 ? "pos":"neg");
+  box.classList.toggle("negative", net<0);
+  let note = `${lots} lote(s) de ${pair} · ${pips>=0?"+":""}${pips} pips (${direction==="buy"?"compra":"venta"})`;
+  if (commission>0) note += ` · bruto ${fmtMoney(gross,accountCurrency)}, comisión -${fmtMoney(commission,accountCurrency)}`;
+  document.getElementById("pipsResultNote").textContent = note;
 
   let marginTxt = "—";
   if (price>0 && contract>0){
@@ -825,10 +969,9 @@ function calcPips(){
 }
 
 function saveCurrentPipsToHistory(){
-  const cat = currentCategory(), pair = currentPair();
+  const pair = currentPair();
   const lots = document.getElementById("lotSize").value;
   const pips = document.getElementById("pipsDistance").value;
-  const accountCurrency = document.getElementById("accountCurrency").value;
   const resultTxt = document.getElementById("pipsResultValue").textContent;
   addHistory({
     type:"Pips→Dinero",
@@ -845,9 +988,12 @@ function initRiskPanel(){
   ["riskCapital","riskPercent","riskPair","riskSlPips"].forEach(id=>
     document.getElementById(id).addEventListener("input", calcRisk));
   document.getElementById("btnSavePreset").addEventListener("click", saveCurrentPreset);
+  document.getElementById("btnUseLotInPips").addEventListener("click", useRiskLotInPips);
   renderPresets();
   calcRisk();
 }
+
+let lastRiskLot = 0;
 
 function calcRisk(){
   const capital = parseFloat(document.getElementById("riskCapital").value)||0;
@@ -858,29 +1004,50 @@ function calcRisk(){
   const def = INSTRUMENTS[cat];
 
   const riskAmount = capital * (pct/100);
+  document.getElementById("riskAmountPreview").innerHTML =
+    `Arriesgas <b>${fmtMoney(riskAmount, accountCurrency)}</b> en esta operación.`;
+
   const pipValuePerLot = pipValuePerLotInAccount(cat, pair, def.pip, def.contract, accountCurrency);
-  const pipValueForSl = pipValuePerLot * slPips;
-  const lotSize = pipValueForSl>0 ? riskAmount/pipValueForSl : 0;
+  const commission = parseFloat(settings.commissionPerLot)||0;
+  const costPerLot = pipValuePerLot*slPips + commission;
+  const lotSize = costPerLot>0 ? riskAmount/costPerLot : 0;
+  lastRiskLot = lotSize;
 
   document.getElementById("riskLotOut").textContent = lotSize.toFixed(2)+" lotes";
   document.getElementById("riskAmountOut").textContent = fmtMoney(riskAmount, accountCurrency);
   document.getElementById("riskPipValueOut").textContent = fmtMoney(pipValuePerLot, accountCurrency);
-  document.getElementById("riskNote").textContent = `${pair} · SL ${slPips} pips · riesgo ${pct}% de ${fmtMoney(capital,accountCurrency)}`;
+  let note = `${pair} · SL ${slPips} pips · riesgo ${pct}% de ${fmtMoney(capital,accountCurrency)}`;
+  if (commission>0) note += ` · incluye comisión de ${fmtMoney(commission,accountCurrency)}/lote`;
+  document.getElementById("riskNote").textContent = note;
+}
+
+function useRiskLotInPips(){
+  const [cat, pair] = document.getElementById("riskPair").value.split("|");
+  document.getElementById("category").value = cat;
+  fillPairSelect(document.getElementById("category"), document.getElementById("pair"));
+  document.getElementById("pair").value = pair;
+  applyInstrumentDefaults();
+  document.getElementById("lotSize").value = lastRiskLot.toFixed(2);
+  const slPips = document.getElementById("riskSlPips").value;
+  document.getElementById("pipsDistance").value = -Math.abs(parseFloat(slPips)||0);
+  touch(pipsOrder,"pipsDistance");
+  solvePipsTriangle(); calcPips();
+  document.querySelector('nav.tabs button[data-tab="panel-pips"]').click();
 }
 
 function renderPresets(){
   const wrap = document.getElementById("presetChips");
   wrap.innerHTML = "";
   if (!presets.length){
-    wrap.innerHTML = '<span class="empty" style="padding:4px 0;">Sin perfiles guardados</span>';
+    wrap.innerHTML = '<span class="empty" style="padding:4px 0;">Sin perfiles guardados todavía</span>';
     return;
   }
   presets.forEach((p, i)=>{
     const chip = document.createElement("div");
     chip.className = "chip";
-    chip.innerHTML = `<span>${p.name}</span><span class="x" data-i="${i}">✕</span>`;
+    chip.innerHTML = `<span>${p.name}</span><span class="x" data-i="${i}"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></span>`;
     chip.addEventListener("click", (e)=>{
-      if (e.target.classList.contains("x")){
+      if (e.target.closest(".x")){
         presets.splice(i,1); store.set("pp_presets", presets); renderPresets();
         return;
       }
@@ -903,28 +1070,125 @@ function saveCurrentPreset(){
 }
 
 /* ---------------- Panel: R:R ---------------- */
+function getRatioValue(){
+  const sel = document.getElementById("rrRatioSelect").value;
+  if (sel === "custom"){
+    const r = parseFloat(document.getElementById("rrRatioCustomRisk").value)||0;
+    const b = parseFloat(document.getElementById("rrRatioCustomReward").value)||0;
+    return r>0 ? b/r : 0;
+  }
+  return parseFloat(sel)||0;
+}
+function setRatioDisplay(ratioValue){
+  const select = document.getElementById("rrRatioSelect");
+  const row = document.getElementById("rrRatioCustomRow");
+  const opt = Array.prototype.find.call(select.options, o=> o.value!=="custom" && Math.abs(parseFloat(o.value)-ratioValue) < 0.01);
+  if (opt){
+    select.value = opt.value; row.style.display = "none";
+  } else {
+    select.value = "custom"; row.style.display = "flex";
+    document.getElementById("rrRatioCustomRisk").value = 1;
+    document.getElementById("rrRatioCustomReward").value = isFinite(ratioValue) ? Number(ratioValue.toFixed(3)) : 0;
+  }
+}
+
+function slPriceFromPips(pips, dir, entry, pipSize){ return dir==="buy" ? entry-pips*pipSize : entry+pips*pipSize; }
+function tpPriceFromPips(pips, dir, entry, pipSize){ return dir==="buy" ? entry+pips*pipSize : entry-pips*pipSize; }
+function slPipsFromPrice(price, dir, entry, pipSize){ return dir==="buy" ? (entry-price)/pipSize : (price-entry)/pipSize; }
+function tpPipsFromPrice(price, dir, entry, pipSize){ return dir==="buy" ? (price-entry)/pipSize : (entry-price)/pipSize; }
+
+function solveRR(){
+  const target = rrOrder[0];
+  const ratio = getRatioValue();
+  if (target === "sl"){
+    if (isFinite(rrTpPipsVal) && ratio>0) rrSlPipsVal = rrTpPipsVal/ratio;
+  } else if (target === "tp"){
+    if (isFinite(rrSlPipsVal) && isFinite(ratio)) rrTpPipsVal = rrSlPipsVal*ratio;
+  } else if (target === "ratio"){
+    if (rrSlPipsVal>0 && isFinite(rrTpPipsVal)) setRatioDisplay(rrTpPipsVal/rrSlPipsVal);
+  }
+}
+
+function refreshRRDisplays(){
+  const [cat] = document.getElementById("rrPair").value.split("|");
+  const pipSize = INSTRUMENTS[cat].pip;
+  const entry = parseFloat(document.getElementById("rrEntry").value);
+  const dir = rrDirection;
+  const dec = priceDecimals(cat);
+
+  document.getElementById("rrSlPips").value = isFinite(rrSlPipsVal) ? Math.round(rrSlPipsVal*10)/10 : "";
+  document.getElementById("rrTpPips").value = isFinite(rrTpPipsVal) ? Math.round(rrTpPipsVal*10)/10 : "";
+
+  if (isFinite(entry)){
+    document.getElementById("rrSlPrice").value = isFinite(rrSlPipsVal) ? slPriceFromPips(rrSlPipsVal,dir,entry,pipSize).toFixed(dec) : "";
+    document.getElementById("rrTpPrice").value = isFinite(rrTpPipsVal) ? tpPriceFromPips(rrTpPipsVal,dir,entry,pipSize).toFixed(dec) : "";
+  } else {
+    document.getElementById("rrSlPrice").value = "";
+    document.getElementById("rrTpPrice").value = "";
+  }
+}
+
 function initRRPanel(){
   fillSimplePairSelect(document.getElementById("rrPair"));
+  setRatioDisplay(2);
+  refreshRRDisplays();
 
   document.querySelectorAll("[data-rrdir]").forEach(btn=>{
     btn.addEventListener("click", ()=>{
       rrDirection = btn.dataset.rrdir;
       document.querySelectorAll("[data-rrdir]").forEach(b=>b.classList.toggle("active", b===btn));
-      calcRR();
+      refreshRRDisplays(); calcRR();
     });
   });
   document.querySelectorAll("[data-rrmode]").forEach(btn=>{
     btn.addEventListener("click", ()=>{
       rrMode = btn.dataset.rrmode;
       document.querySelectorAll("[data-rrmode]").forEach(b=>b.classList.toggle("active", b===btn));
-      document.getElementById("rrPriceInputs").style.display = rrMode==="price" ? "" : "none";
       document.getElementById("rrPipsInputs").style.display = rrMode==="pips" ? "" : "none";
-      calcRR();
+      document.getElementById("rrPriceInputs").style.display = rrMode==="price" ? "" : "none";
     });
   });
 
-  ["rrEntry","rrSl","rrTp","rrSlPips","rrTpPips","rrPair","rrLot"].forEach(id=>
-    document.getElementById(id).addEventListener("input", calcRR));
+  document.getElementById("rrEntry").addEventListener("input", ()=>{ refreshRRDisplays(); calcRR(); });
+  document.getElementById("rrPair").addEventListener("input", ()=>{ refreshRRDisplays(); calcRR(); });
+  document.getElementById("rrLot").addEventListener("input", calcRR);
+
+  document.getElementById("rrSlPips").addEventListener("input", ()=>{
+    touch(rrOrder,"sl");
+    rrSlPipsVal = parseFloat(document.getElementById("rrSlPips").value)||0;
+    solveRR(); refreshRRDisplays(); calcRR();
+  });
+  document.getElementById("rrTpPips").addEventListener("input", ()=>{
+    touch(rrOrder,"tp");
+    rrTpPipsVal = parseFloat(document.getElementById("rrTpPips").value)||0;
+    solveRR(); refreshRRDisplays(); calcRR();
+  });
+  document.getElementById("rrSlPrice").addEventListener("input", ()=>{
+    touch(rrOrder,"sl");
+    const [cat] = document.getElementById("rrPair").value.split("|");
+    const entry = parseFloat(document.getElementById("rrEntry").value);
+    const priceVal = parseFloat(document.getElementById("rrSlPrice").value);
+    if (isFinite(entry) && isFinite(priceVal)) rrSlPipsVal = slPipsFromPrice(priceVal, rrDirection, entry, INSTRUMENTS[cat].pip);
+    solveRR(); refreshRRDisplays(); calcRR();
+  });
+  document.getElementById("rrTpPrice").addEventListener("input", ()=>{
+    touch(rrOrder,"tp");
+    const [cat] = document.getElementById("rrPair").value.split("|");
+    const entry = parseFloat(document.getElementById("rrEntry").value);
+    const priceVal = parseFloat(document.getElementById("rrTpPrice").value);
+    if (isFinite(entry) && isFinite(priceVal)) rrTpPipsVal = tpPipsFromPrice(priceVal, rrDirection, entry, INSTRUMENTS[cat].pip);
+    solveRR(); refreshRRDisplays(); calcRR();
+  });
+  document.getElementById("rrRatioSelect").addEventListener("change", ()=>{
+    touch(rrOrder,"ratio");
+    document.getElementById("rrRatioCustomRow").style.display = document.getElementById("rrRatioSelect").value==="custom" ? "flex" : "none";
+    solveRR(); refreshRRDisplays(); calcRR();
+  });
+  ["rrRatioCustomRisk","rrRatioCustomReward"].forEach(id=>
+    document.getElementById(id).addEventListener("input", ()=>{
+      touch(rrOrder,"ratio"); solveRR(); refreshRRDisplays(); calcRR();
+    }));
+
   calcRR();
 }
 
@@ -935,32 +1199,29 @@ function calcRR(){
   const accountCurrency = document.getElementById("accountCurrency").value;
   const pipValuePerLot = pipValuePerLotInAccount(cat, pair, def.pip, def.contract, accountCurrency) * lots;
 
-  let riskPips, rewardPips;
-  if (rrMode === "pips"){
-    riskPips = Math.abs(parseFloat(document.getElementById("rrSlPips").value)||0);
-    rewardPips = Math.abs(parseFloat(document.getElementById("rrTpPips").value)||0);
-  } else {
-    const entry = parseFloat(document.getElementById("rrEntry").value);
-    const sl = parseFloat(document.getElementById("rrSl").value);
-    const tp = parseFloat(document.getElementById("rrTp").value);
-    if (isFinite(entry) && isFinite(sl) && isFinite(tp) && def.pip>0){
-      riskPips = Math.abs(entry-sl)/def.pip;
-      rewardPips = Math.abs(tp-entry)/def.pip;
-    } else { riskPips = 0; rewardPips = 0; }
-  }
-
+  const riskPips = Math.abs(rrSlPipsVal)||0;
+  const rewardPips = Math.abs(rrTpPipsVal)||0;
   const ratio = riskPips>0 ? rewardPips/riskPips : 0;
+
   document.getElementById("rrRatioOut").textContent = `1 : ${ratio.toFixed(2)}`;
   document.getElementById("rrNote").textContent =
-    `${pair} · riesgo ${riskPips.toFixed(1)} pips · beneficio ${rewardPips.toFixed(1)} pips (${rrDirection==="buy"?"compra":"venta"})`;
+    `${pair} · ${lots} lote(s) · riesgo ${riskPips.toFixed(1)} pips · beneficio ${rewardPips.toFixed(1)} pips (${rrDirection==="buy"?"compra":"venta"})`;
 
-  const riskAmount = pipValuePerLot*riskPips;
-  const rewardAmount = pipValuePerLot*rewardPips;
+  const commission = commissionCost(lots);
+  const riskAmount = pipValuePerLot*riskPips + commission;
+  const rewardAmount = pipValuePerLot*rewardPips - commission;
   document.getElementById("rrRiskAmountOut").textContent = fmtMoney(riskAmount, accountCurrency);
   document.getElementById("rrProfitAmountOut").textContent = fmtMoney(rewardAmount, accountCurrency);
 
   const box = document.getElementById("rrResultBox");
   box.classList.toggle("negative", ratio>0 && ratio<1);
+
+  const breakeven = ratio>0 ? (1/(1+ratio))*100 : 100;
+  document.getElementById("rrExplain").innerHTML =
+    `Si el precio llega a tu <b>Stop Loss</b>, perderías ${fmtMoney(riskAmount, accountCurrency)}. `+
+    `Si llega a tu <b>Take Profit</b>, ganarías ${fmtMoney(rewardAmount, accountCurrency)} — `+
+    `por cada $1 que arriesgas, buscas ganar $${ratio.toFixed(2)}. `+
+    `Con esta relación necesitas acertar más del <b>${breakeven.toFixed(0)}%</b> de tus operaciones para no perder dinero a largo plazo.`;
 }
 
 /* ---------------- History ---------------- */
@@ -1006,6 +1267,7 @@ function initSettings(){
   fillCurrencySelect(document.getElementById("settingsCurrency"));
   document.getElementById("settingsCurrency").value = settings.accountCurrency;
   document.getElementById("settingsLeverage").value = settings.leverage;
+  document.getElementById("settingsCommission").value = settings.commissionPerLot || "";
 
   document.getElementById("btnSettings").addEventListener("click", ()=>{
     document.getElementById("sheetBackdrop").classList.add("show");
@@ -1015,6 +1277,8 @@ function initSettings(){
   document.getElementById("btnSaveSettings").addEventListener("click", ()=>{
     settings.accountCurrency = document.getElementById("settingsCurrency").value;
     settings.leverage = parseFloat(document.getElementById("settingsLeverage").value);
+    const commissionVal = parseFloat(document.getElementById("settingsCommission").value);
+    settings.commissionPerLot = isFinite(commissionVal) && commissionVal>0 ? commissionVal : null;
     store.set("pp_settings", settings);
     document.getElementById("accountCurrency").value = settings.accountCurrency;
     document.getElementById("leverage").value = settings.leverage;
