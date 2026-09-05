@@ -247,18 +247,23 @@
           <select id="pair"></select>
         </div>
       </div>
-      <div class="row">
-        <div>
-          <label>Tamaño del pip</label>
-          <input type="number" id="pipSize" step="any">
+      <button type="button" id="btnAdvancedToggle" style="background:none;border:none;color:var(--accent);font-size:12.5px;font-weight:600;padding:0 0 12px;cursor:pointer;display:flex;align-items:center;gap:4px;">
+        Ajustes avanzados del instrumento <span id="advancedChevron">▾</span>
+      </button>
+      <div id="advancedFields" style="display:none;">
+        <div class="row">
+          <div>
+            <label>Tamaño del pip</label>
+            <input type="number" id="pipSize" step="any">
+          </div>
+          <div>
+            <label>Tamaño de contrato</label>
+            <input type="number" id="contractSize" step="any">
+          </div>
         </div>
-        <div>
-          <label>Tamaño de contrato</label>
-          <input type="number" id="contractSize" step="any">
+        <div style="font-size:11px;color:var(--muted);margin:-8px 0 12px;line-height:1.4;">
+          Se autocompletan según el instrumento (ej. 100,000 divisa base para forex, 100 onzas para oro, 1 contrato para índices/cripto). Solo edítalos si tu bróker usa un tamaño distinto — el cálculo normal solo necesita el lotaje.
         </div>
-      </div>
-      <div style="font-size:11px;color:var(--muted);margin:-8px 0 12px;line-height:1.4;">
-        El tamaño de contrato son las unidades del activo que representa 1 lote (ej. 100,000 divisa base para forex, 100 onzas para oro, 1 contrato para índices/cripto). Puedes editarlo si tu bróker usa otro tamaño.
       </div>
       <div class="rate-status">
         <span class="dot" id="rateDot"></span>
@@ -695,6 +700,14 @@ function initPipsPanel(){
 
   ["pipSize","contractSize","lotSize","pipsDistance","currentPrice","accountCurrency","leverage"]
     .forEach(id=> document.getElementById(id).addEventListener("input", calcPips));
+
+  document.getElementById("btnAdvancedToggle").addEventListener("click", ()=>{
+    const box = document.getElementById("advancedFields");
+    const chevron = document.getElementById("advancedChevron");
+    const open = box.style.display !== "none";
+    box.style.display = open ? "none" : "block";
+    chevron.textContent = open ? "▾" : "▴";
+  });
 
   document.getElementById("pipsMinus10").addEventListener("click", ()=>{
     const el = document.getElementById("pipsDistance");
