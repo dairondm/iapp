@@ -622,20 +622,40 @@ async function fetchRates(force){
       if (data2[id]) cryptoPrices[pair] = data2[id].usd;
     });
   }catch(e){ /* ignore */ }
-  try{
-    // Endpoint no oficial usado por el propio widget de goldprice.org — gratis, sin API key.
-    // Puede dejar de funcionar sin aviso; por eso siempre cae a modo manual si falla.
-    const res3 = await fetch("https://data-asg.goldprice.org/dbXRates/USD");
-    const data3 = await res3.json();
-    const item = data3 && data3.items && data3.items[0];
-    if (item){
-      if (item.xauPrice) metalPrices["XAU/USD"] = item.xauPrice;
-      if (item.xagPrice) metalPrices["XAG/USD"] = item.xagPrice;
-    }
-  }catch(e){ /* ignore: cae a manual */ }
+  await fetchMetalPrices();
   updateRateStatus();
   setCurrentPriceFromLive();
   recalcAll();
+}
+
+// Precio del oro/plata: no existe una API comercial gratis+ilimitada+sin-key
+// con CORS abierto para navegador, así que se intentan dos fuentes no oficiales
+// en cadena. Si ambas fallan (CORS, caída del servicio, etc.), cae a manual
+// sin romper la app — igual que el resto del modo híbrido.
+async function fetchMetalPrices(){
+  // Fuente 1: gold-api.com — gratis, sin API key, pensada para uso público.
+  try{
+    const [gRes, sRes] = await Promise.all([
+      fetch("https://api.gold-api.com/price/XAU"),
+      fetch("https://api.gold-api.com/price/XAG")
+    ]);
+    const [gData, sData] = await Promise.all([gRes.json(), sRes.json()]);
+    if (gData && typeof gData.price === "number") metalPrices["XAU/USD"] = gData.price;
+    if (sData && typeof sData.price === "number") metalPrices["XAG/USD"] = sData.price;
+  }catch(e){ /* sigue con la fuente 2 */ }
+
+  // Fuente 2 (respaldo): endpoint no oficial del widget de goldprice.org.
+  if (!metalPrices["XAU/USD"] || !metalPrices["XAG/USD"]){
+    try{
+      const res = await fetch("https://data-asg.goldprice.org/dbXRates/USD");
+      const data = await res.json();
+      const item = data && data.items && data.items[0];
+      if (item){
+        if (!metalPrices["XAU/USD"] && item.xauPrice) metalPrices["XAU/USD"] = item.xauPrice;
+        if (!metalPrices["XAG/USD"] && item.xagPrice) metalPrices["XAG/USD"] = item.xagPrice;
+      }
+    }catch(e){ /* cae a manual */ }
+  }
 }
 
 function updateRateStatus(state){
